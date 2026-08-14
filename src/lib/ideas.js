@@ -1,15 +1,44 @@
 import rawIdeas from '../data/ideas.json';
+import rawStarters from '../data/starters.json';
 
 export const DIFF_ORDER = { Easy: 0, Medium: 1, Hard: 2 };
 export const DIFF_LEVEL = { Easy: 1, Medium: 2, Hard: 3 };
 export const DIFFICULTIES = ['Easy', 'Medium', 'Hard'];
 
-/** Ideas with a stable id and a prebuilt lowercase search haystack. */
-export const IDEAS = rawIdeas.map((idea, index) => ({
+/**
+ * Starters are appended after the buildathon briefs so existing #idea-N deep
+ * links keep pointing at the same idea.
+ */
+export const IDEAS = [...rawIdeas, ...rawStarters].map((idea, index) => ({
+  kind: 'brief',
   ...idea,
   id: index,
   haystack: `${idea.name} ${idea.build} ${idea.why || ''}`.toLowerCase(),
 }));
+
+/** Section headings differ between a buildathon brief and a beginner starter. */
+const LABELS = {
+  brief: {
+    why: 'Why it can win',
+    plan: 'How to build it, step by step',
+    need: 'What you will need',
+    levelups: 'Memory and self-learning',
+    deploy: 'Deploy',
+    proof: 'Proof bar',
+    score: 'Scoring note',
+  },
+  starter: {
+    why: "Why it's a good first build",
+    plan: 'Build it in five steps',
+    need: 'What v1 needs',
+    levelups: 'What to add next',
+    deploy: 'Stack',
+    proof: 'Done when',
+    score: 'Scoring note',
+  },
+};
+
+export const labelsFor = (idea) => LABELS[idea.kind] || LABELS.brief;
 
 export const TRACKS = [...new Set(IDEAS.map((idea) => idea.track))];
 
@@ -31,8 +60,12 @@ export const SORTED_IDEAS = [...IDEAS].sort((a, b) => {
   return a.name.localeCompare(b.name);
 });
 
-/** Sponsor names for the card footer, or a fallback count of build steps. */
+/** Card footer: sponsors for a brief, API or offline-status for a starter. */
 export function partnerMeta(idea) {
+  if (idea.kind === 'starter') {
+    if (!idea.api) return 'No API or key needed';
+    return idea.api.includes('free key') ? 'Free API key needed' : 'Free API, no key';
+  }
   const powerups = idea.powerups || [];
   if (!powerups.length) return `${(idea.need || []).length} build steps`;
   return powerups.map((s) => s.split(' (')[0]).join(' · ');
@@ -47,6 +80,7 @@ export function parsePowerup(text) {
 
 /** The full brief as plain text, for the drawer's copy button. */
 export function buildBrief(idea) {
+  const L = labelsFor(idea);
   const lines = [
     idea.name,
     `${idea.difficulty} idea · ${idea.track} track`,
@@ -65,18 +99,20 @@ export function buildBrief(idea) {
     lines.push('');
   };
 
-  if (idea.why) section('Why it can win', idea.why);
-  if (idea.plan?.length) list('How to build it, step by step', idea.plan, 'n');
+  if (idea.prompt) section('Build prompt', idea.prompt);
+  if (idea.why) section(L.why, idea.why);
+  if (idea.plan?.length) list(L.plan, idea.plan, 'n');
   if (idea.scenario) section('Who this is for', idea.scenario);
   if (idea.hermes) section('How the agent fits', idea.hermes);
-  if (idea.need?.length) list('What you will need', idea.need);
-  if (idea.levelups?.length) list('Memory and self-learning', idea.levelups);
+  if (idea.need?.length) list(L.need, idea.need);
+  if (idea.levelups?.length) list(L.levelups, idea.levelups);
   if (idea.powerups?.length) list('Partner power-ups', idea.powerups);
   if (idea.demo) section('Your demo moment', idea.demo);
 
-  lines.push(`Deploy: ${idea.deploy}`);
-  lines.push(`Proof bar: ${idea.proof}`);
-  lines.push(`Scoring note: ${idea.score}`);
+  if (idea.deploy) lines.push(`${L.deploy}: ${idea.deploy}`);
+  if (idea.api) lines.push(`API: ${idea.api}`);
+  if (idea.proof) lines.push(`${L.proof}: ${idea.proof}`);
+  if (idea.score) lines.push(`${L.score}: ${idea.score}`);
   return lines.join('\n');
 }
 

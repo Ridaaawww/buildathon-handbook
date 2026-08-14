@@ -1,7 +1,8 @@
 # Idea Bank
 
-An interactive board for the buildathon project ideas — 93 briefs you can search,
-filter, and open in full. Built with React and Vite.
+An interactive board of 113 project ideas you can search, filter, and open in
+full: 93 buildathon briefs plus 20 beginner starters that ship with a
+copy-and-paste build prompt. Built with React and Vite.
 
 ## Running it
 
@@ -20,8 +21,13 @@ Then visit <http://localhost:8743>.
 
 ## What's in it
 
-- **93 ideas** across three tracks (Virality, Revenue, AI as Agency), each rated
-  Easy / Medium / Hard.
+- **113 ideas** across four tracks — Virality, Revenue, AI as Agency, and
+  Starter — each rated Easy / Medium / Hard.
+- **20 beginner starters** on the Starter track: todo list, habit tracker,
+  weather dashboard, kanban board and similar. Each opens with a **build
+  prompt** you can copy straight into a coding agent to get v1 running, plus
+  what v1 needs, five build steps, and what to add next. Half use a free
+  no-key API; the rest need no network at all.
 - **Search and filters** by keyword, track, and level, plus a random-idea picker.
 - **Full brief per idea** in a side drawer: why it can win, a step-by-step build
   plan, who it's for, how the agent fits, what you'll need, memory and
@@ -41,7 +47,8 @@ vite.config.js          Dev server port, relative base, chunk splitting
 src/
   main.jsx              React root
   App.jsx               Filter state, drawer state, hash sync
-  data/ideas.json       The 93 idea records
+  data/ideas.json       The 93 buildathon briefs
+  data/starters.json    The 20 beginner starters
   lib/ideas.js          Derived data, sorting, brief text builder
   hooks/                useTheme, useSubmissions, useReducedMotion
   components/           TitleBlock, Toolbar, IdeaGrid, IdeaCard,
@@ -73,8 +80,17 @@ Edit `src/data/ideas.json`. Each record has these fields:
 `lib/ideas.js` derives track lists, per-track and per-level counts, sort order,
 and each idea's search haystack, so adding a new track needs no other changes.
 
-Ideas are keyed by their array index, which is what `#idea-N` deep links point
-at. Reordering the file changes existing links; appending to the end does not.
+Beginner starters live in `src/data/starters.json` and use a slightly different
+shape: `kind: "starter"`, a `prompt` field holding the copy-and-paste build
+prompt, an optional `api` field naming the endpoint, and `deploy` / `proof`
+reused as the stack and the done-when line. `labelsFor()` in `lib/ideas.js`
+swaps the drawer's section headings based on `kind`, so a starter reads
+"Why it's a good first build" where a brief reads "Why it can win".
+
+Ideas are keyed by their array index across the merged list, which is what
+`#idea-N` deep links point at. Starters are appended after the briefs, so
+briefs keep indices 0–92 and starters take 93–112. Appending to either file is
+safe; reordering `ideas.json` would shift every existing link.
 
 ## Idea submissions
 

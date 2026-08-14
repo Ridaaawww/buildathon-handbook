@@ -1,6 +1,51 @@
 import { useEffect, useRef, useState } from 'react';
-import { DIFF_LEVEL, buildBrief, parsePowerup } from '../lib/ideas';
+import { DIFF_LEVEL, buildBrief, labelsFor, parsePowerup } from '../lib/ideas';
 import { Meter } from './Meter';
+
+/** Copy helper with a clipboard fallback for non-secure contexts. */
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    let ok = false;
+    try {
+      ok = document.execCommand('copy');
+    } catch {
+      ok = false;
+    }
+    document.body.removeChild(ta);
+    return ok;
+  }
+}
+
+/** The copy-and-go build prompt shown at the top of a starter brief. */
+function PromptBlock({ prompt }) {
+  const [label, setLabel] = useState('Copy prompt');
+  const copy = async () => {
+    const ok = await copyText(prompt);
+    setLabel(ok ? 'Copied' : 'Press ⌘C');
+    setTimeout(() => setLabel('Copy prompt'), 1500);
+  };
+  return (
+    <div className="prompt-block">
+      <div className="prompt-head">
+        <span className="prompt-label">Build prompt</span>
+        <button type="button" className="prompt-copy" onClick={copy}>{label}</button>
+      </div>
+      <pre className="prompt-body">{prompt}</pre>
+      <p className="prompt-hint">
+        Paste this into Claude Code, Cursor, or any coding agent to get v1 running.
+      </p>
+    </div>
+  );
+}
 
 function Section({ label, children }) {
   return (
@@ -50,28 +95,12 @@ export function IdeaDrawer({ idea, onClose }) {
   }, [open, onClose]);
 
   const copy = async () => {
-    const text = buildBrief(idea);
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      try {
-        document.execCommand('copy');
-      } catch {
-        setCopyLabel('Press ⌘C');
-        document.body.removeChild(ta);
-        return;
-      }
-      document.body.removeChild(ta);
-    }
-    setCopyLabel('Copied');
+    const ok = await copyText(buildBrief(idea));
+    setCopyLabel(ok ? 'Copied' : 'Press ⌘C');
     setTimeout(() => setCopyLabel('Copy brief'), 1500);
   };
+
+  const L = idea ? labelsFor(idea) : null;
 
   return (
     <>
@@ -113,14 +142,16 @@ export function IdeaDrawer({ idea, onClose }) {
               <h2 className="drawer-title">{idea.name}</h2>
               <p className="drawer-lead">{idea.build}</p>
 
+              {idea.prompt && <PromptBlock prompt={idea.prompt} />}
+
               {idea.why && (
-                <Section label="Why it can win">
+                <Section label={L.why}>
                   <p>{idea.why}</p>
                 </Section>
               )}
 
               {idea.plan?.length > 0 && (
-                <Section label="How to build it, step by step">
+                <Section label={L.plan}>
                   <ol>
                     {idea.plan.map((step, i) => (
                       <li key={i}>{step}</li>
@@ -142,7 +173,7 @@ export function IdeaDrawer({ idea, onClose }) {
               )}
 
               {idea.need?.length > 0 && (
-                <Section label="What you will need">
+                <Section label={L.need}>
                   <ul className="checklist">
                     {idea.need.map((item, i) => (
                       <li key={i}>{item}</li>
@@ -152,7 +183,7 @@ export function IdeaDrawer({ idea, onClose }) {
               )}
 
               {idea.levelups?.length > 0 && (
-                <Section label="Memory and self-learning">
+                <Section label={L.levelups}>
                   <ul>
                     {idea.levelups.map((item, i) => (
                       <li key={i}>{item}</li>
@@ -184,20 +215,21 @@ export function IdeaDrawer({ idea, onClose }) {
                 </Section>
               )}
 
-              <Section label="Deploy and proof">
+              <Section label={idea.kind === 'starter' ? 'Stack and scope' : 'Deploy and proof'}>
                 <div className="spec-table">
-                  <div className="spec-row">
-                    <div className="spec-key">Deploy</div>
-                    <div className="spec-val">{idea.deploy}</div>
-                  </div>
-                  <div className="spec-row">
-                    <div className="spec-key">Proof bar</div>
-                    <div className="spec-val">{idea.proof}</div>
-                  </div>
-                  <div className="spec-row">
-                    <div className="spec-key">Scoring note</div>
-                    <div className="spec-val">{idea.score}</div>
-                  </div>
+                  {[
+                    [L.deploy, idea.deploy],
+                    ['API', idea.api],
+                    [L.proof, idea.proof],
+                    [L.score, idea.score],
+                  ]
+                    .filter(([, value]) => value)
+                    .map(([key, value]) => (
+                      <div className="spec-row" key={key}>
+                        <div className="spec-key">{key}</div>
+                        <div className="spec-val">{value}</div>
+                      </div>
+                    ))}
                 </div>
               </Section>
             </div>

@@ -1,0 +1,612 @@
+[
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "Todo List with Filters",
+    "build": "The classic task list: add, complete, delete, and filter tasks, with everything saved between visits.",
+    "prompt": "Build a todo list as a single-page React app with Vite.\n\nRequirements for v1:\n- An input at the top; pressing Enter or clicking Add creates a task.\n- Each task has a checkbox. Checking it marks the task done and shows the text with a line-through.\n- Each task has a delete button that removes it.\n- Three filter tabs: All, Active, Completed. The active tab is visually highlighted.\n- A footer line showing how many tasks are left, e.g. \"3 items left\".\n- Everything persists to localStorage so a page refresh keeps the list.\n\nConstraints: no backend, no auth, no UI library. Plain CSS. Keep all state in one\nReact component tree with useState. Do not add features I did not ask for.",
+    "why": "The best first build there is. Every core idea in app development shows up exactly once: holding a list in state, adding and removing items immutably, deriving a filtered view without destroying the original data, and saving to storage. Almost everything you build later is a variation on this one app, so it is worth doing carefully rather than quickly.",
+    "need": [
+      "Text input that adds a task on Enter and on button click",
+      "Checkbox per task that toggles a done state",
+      "Delete button per task",
+      "All / Active / Completed filter tabs with the current one highlighted",
+      "Remaining-count line and localStorage persistence"
+    ],
+    "plan": [
+      "Render a hardcoded array of three tasks so you can see the layout before anything is interactive.",
+      "Add the input and wire it to append a new task object with an id, text, and done flag.",
+      "Add the checkbox and delete button, updating state immutably with map and filter.",
+      "Add the three filter tabs and derive the visible list from state rather than storing it separately.",
+      "Save to localStorage on every change and load from it on first render."
+    ],
+    "levelups": [
+      "Edit a task inline by double-clicking its text.",
+      "Add due dates and sort the list by them.",
+      "Drag to reorder tasks."
+    ],
+    "deploy": "React + Vite, plain CSS, localStorage. No backend.",
+    "proof": "You can add three tasks, complete one, switch to Active, refresh the page, and find everything exactly as you left it."
+  },
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "Habit Tracker with Streaks",
+    "build": "Tick off daily habits on a calendar grid and watch your current streak climb.",
+    "prompt": "Build a daily habit tracker as a single-page React app with Vite.\n\nRequirements for v1:\n- Add a habit by name; delete a habit.\n- Each habit shows a row of the last 30 days as small squares, oldest on the left.\n- Clicking today's square toggles whether the habit was done today. Past squares are\n  filled if that day was completed and empty if not.\n- Each habit displays its current streak and its longest streak.\n- Store completions as an array of ISO date strings (\"2026-08-15\") per habit.\n- Persist to localStorage.\n\nConstraints: no backend, no date library — use the built-in Date object. Plain CSS.\nOnly today's square should be clickable.",
+    "why": "Dates are where most beginners get stuck, and this forces you through it in a safe place. Computing a streak means sorting dates, comparing calendar days rather than timestamps, and handling the gap between yesterday and today. Getting that right teaches you more than another CRUD list would.",
+    "need": [
+      "Add and delete habits by name",
+      "A 30-day grid of squares per habit",
+      "Toggle today's completion by clicking",
+      "Current streak and longest streak per habit",
+      "localStorage persistence"
+    ],
+    "plan": [
+      "Render one hardcoded habit with 30 empty squares to get the grid layout right.",
+      "Write a helper that returns the last 30 dates as ISO strings and use it to label the squares.",
+      "Store completions as a Set or array of date strings and fill squares that match.",
+      "Make today's square clickable to add or remove today's date.",
+      "Write the streak function, then add habit creation, deletion, and persistence."
+    ],
+    "levelups": [
+      "Let people backfill a missed day.",
+      "Add a weekly completion percentage per habit.",
+      "Colour-code squares by how long the streak was at that point."
+    ],
+    "deploy": "React + Vite, plain CSS, localStorage. No backend, no date library.",
+    "proof": "You can create a habit, mark today done, refresh, and see the streak read 1 with today's square filled."
+  },
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "Hacker News Reader",
+    "build": "A clean front page reader that pulls live stories and lets you search the archive.",
+    "prompt": "Build a Hacker News reader as a single-page React app with Vite.\n\nUse the free Algolia HN API — no API key or signup required:\n- Front page: https://hn.algolia.com/api/v1/search?tags=front_page\n- Search:     https://hn.algolia.com/api/v1/search?query=YOUR_TERM\n\nRequirements for v1:\n- On load, fetch the front page and render a list of stories.\n- Each row shows the title (linking to story.url in a new tab), the points, the\n  author, and the comment count.\n- A search box that refetches using the search endpoint when submitted.\n- Show a loading state while a request is in flight.\n- Show a friendly error message if the request fails, with a retry button.\n- Handle stories with a null url by linking to the HN discussion instead.\n\nConstraints: no backend, no data library — use fetch inside useEffect. Plain CSS.",
+    "why": "Your first app that talks to the outside world, and the outside world is unreliable. You have to handle three states for the same screen — loading, loaded, and failed — which is the single most common thing beginners skip and the most common reason real apps feel broken. The API needs no key, so nothing blocks you.",
+    "need": [
+      "Fetch and render the HN front page on load",
+      "Title, points, author, and comment count per row",
+      "Search box that refetches from the search endpoint",
+      "Visible loading state during requests",
+      "Error state with a working retry button"
+    ],
+    "plan": [
+      "Fetch the front page in useEffect and console.log the response so you can see its shape.",
+      "Render the list of titles only, ignoring styling and the other fields.",
+      "Add points, author, and comment count, and link each title correctly.",
+      "Add the loading state, then deliberately break the URL to build and check the error state.",
+      "Add the search box and refetch on submit."
+    ],
+    "levelups": [
+      "Add pagination with the page query parameter.",
+      "Cache results per search term so revisiting is instant.",
+      "Add a saved-for-later list backed by localStorage."
+    ],
+    "deploy": "React + Vite, plain CSS, fetch in useEffect. No backend.",
+    "proof": "Stories load on open, a search returns different stories, and turning off wifi shows the error state rather than a blank page.",
+    "api": "https://hn.algolia.com/api/v1/search?tags=front_page — no key required"
+  },
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "Weather Dashboard",
+    "build": "Search any city and see the current conditions plus a seven-day forecast.",
+    "prompt": "Build a weather dashboard as a single-page React app with Vite.\n\nUse Open-Meteo, which is free and needs no API key:\n- Geocoding: https://geocoding-api.open-meteo.com/v1/search?name=CITY&count=5\n- Forecast:  https://api.open-meteo.com/v1/forecast?latitude=LAT&longitude=LON&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=auto\n\nRequirements for v1:\n- A city search box. Searching calls the geocoding endpoint and shows matching\n  cities in a dropdown, since city names are ambiguous.\n- Picking a city fetches its forecast and shows the current temperature and\n  condition prominently.\n- Below that, a seven-day forecast row with day name, high, and low.\n- Map the numeric weather_code to a readable label and an emoji using a lookup object.\n- Remember the last selected city in localStorage and reload it on next visit.\n- Loading and error states for both requests.\n\nConstraints: no backend, no API key, no chart library. Plain CSS.",
+    "why": "This is the first build where one request depends on another: you cannot fetch weather until geocoding gives you coordinates. Chaining requests and keeping the UI honest while two of them are in flight is a genuine step up from a single fetch, and the ambiguous-city problem teaches you why real apps have disambiguation dropdowns.",
+    "need": [
+      "City search hitting the geocoding endpoint",
+      "Results dropdown to disambiguate between matching cities",
+      "Current temperature and condition for the chosen city",
+      "Seven-day forecast with day, high, and low",
+      "Last city remembered in localStorage"
+    ],
+    "plan": [
+      "Fetch one hardcoded city's forecast and render the current temperature only.",
+      "Add the seven-day row, reading the parallel arrays the API returns.",
+      "Build the weather_code lookup object mapping numbers to label and emoji.",
+      "Add the geocoding search and the results dropdown, then wire selection to the forecast fetch.",
+      "Add loading and error states, then persist the last city."
+    ],
+    "levelups": [
+      "Add a geolocation button that uses the browser's coordinates.",
+      "Add an hourly view for the next 24 hours.",
+      "Switch between Celsius and Fahrenheit."
+    ],
+    "deploy": "React + Vite, plain CSS, two chained fetches. No backend, no key.",
+    "proof": "Searching a city gives you a dropdown, picking one shows today plus seven days, and reopening the app restores that city.",
+    "api": "https://api.open-meteo.com — no key required"
+  },
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "Expense Tracker",
+    "build": "Log what you spend, tag it by category, and see where the money actually goes.",
+    "prompt": "Build an expense tracker as a single-page React app with Vite.\n\nRequirements for v1:\n- A form to add an expense: description, amount, category (dropdown: Food, Transport,\n  Bills, Fun, Other), and date defaulting to today.\n- A list of expenses, newest first, each with a delete button.\n- A total spent figure at the top, updating as expenses change.\n- A per-category breakdown showing each category's total and its percentage of the\n  whole, drawn as simple horizontal bars using div widths.\n- A month filter so you only see the selected month.\n- Persist to localStorage.\n\nConstraints: no backend, no chart library — bars are divs with a percentage width.\nStore amounts in cents as integers to avoid floating point errors. Plain CSS.",
+    "why": "The first build where the numbers have to be right, which changes how you write code. Storing money as floats gives you 0.1 + 0.2 = 0.30000000000000004 in a total someone is reading, so this teaches integer cents early. It is also your first taste of aggregation: grouping rows by category and turning that into something visual without a chart library.",
+    "need": [
+      "Add-expense form with description, amount, category, and date",
+      "Expense list, newest first, with delete",
+      "Running total across the filtered view",
+      "Per-category totals with percentage bars",
+      "Month filter and localStorage persistence"
+    ],
+    "plan": [
+      "Build the form and render the raw list of added expenses with no styling.",
+      "Add the total, storing amounts as integer cents and formatting only at display time.",
+      "Group by category with reduce and render each group's total as a number.",
+      "Turn those totals into percentage-width bars.",
+      "Add the month filter and persistence."
+    ],
+    "levelups": [
+      "Add a monthly budget with an over-budget warning.",
+      "Export the filtered view to CSV.",
+      "Add income as well as expenses and show the net."
+    ],
+    "deploy": "React + Vite, plain CSS, localStorage. Amounts stored as integer cents.",
+    "proof": "Adding three expenses across two categories gives a correct total and bars whose widths sum to the full width."
+  },
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "Pomodoro Focus Timer",
+    "build": "A 25-minute work timer that cycles into breaks and counts the sessions you finish.",
+    "prompt": "Build a Pomodoro timer as a single-page React app with Vite.\n\nRequirements for v1:\n- A large MM:SS countdown, starting at 25:00.\n- Start, Pause, and Reset buttons. Start and Pause can be one toggling button.\n- When work time hits zero, automatically switch to a 5-minute break and keep counting.\n  After every fourth work session, use a 15-minute long break instead.\n- The current mode (Work / Short Break / Long Break) is clearly labelled.\n- A counter of completed work sessions today.\n- Play a short beep when a session ends, using the Web Audio API rather than an audio file.\n- Show the remaining time in the browser tab title so it is visible from another tab.\n\nConstraints: no backend, no timer library. Use setInterval inside useEffect and clean\nit up properly on unmount and on pause. Plain CSS.",
+    "why": "The first build where you manage something that lives outside React, and cleaning it up is the whole lesson. A setInterval that is not cleared on unmount keeps running forever and produces the classic bug where the timer speeds up every time you hit Start. Learning useEffect's cleanup function here saves you from a whole category of confusing bugs later.",
+    "need": [
+      "MM:SS countdown with Start, Pause, and Reset",
+      "Automatic switch between work, short break, and long break",
+      "Clear label for the current mode",
+      "Completed-session counter",
+      "Beep on completion and countdown in the tab title"
+    ],
+    "plan": [
+      "Render a static 25:00 display and write the seconds-to-MM:SS formatter.",
+      "Add setInterval in useEffect to decrement, and make sure the cleanup clears it.",
+      "Add Start, Pause, and Reset, checking the timer does not speed up after repeated Starts.",
+      "Add the mode cycle and the session counter.",
+      "Add the Web Audio beep and the document.title update."
+    ],
+    "levelups": [
+      "Let people configure the work and break lengths.",
+      "Log finished sessions with timestamps and show a daily history.",
+      "Add a browser notification for when the tab is in the background."
+    ],
+    "deploy": "React + Vite, plain CSS, setInterval with useEffect cleanup, Web Audio API.",
+    "proof": "Pressing Start five times in a row does not make the countdown run faster, and a finished work session rolls into a break on its own."
+  },
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "Flashcard Study App",
+    "build": "Make decks of cards, flip through them, and let the ones you miss come back around.",
+    "prompt": "Build a flashcard app as a single-page React app with Vite.\n\nRequirements for v1:\n- Create a deck with a name; add cards to it with a front and a back.\n- A study mode that shows one card at a time, front first. Clicking it flips to the back\n  with a CSS transition.\n- After flipping, two buttons: \"Got it\" and \"Missed it\".\n- Missed cards go back into the queue for the current session; correct ones leave it.\n  The session ends when the queue is empty.\n- An end-of-session summary: cards studied, and how many you missed at least once.\n- Persist decks and cards to localStorage.\n\nConstraints: no backend, no animation library — use a CSS transform for the flip.\nPlain CSS.",
+    "why": "A queue is a different shape from a list, and this is a clean place to meet one. Cards leave the queue when correct and rejoin it when missed, so the data changes as you move through it rather than sitting still. That is a real algorithm with a visible result, and the flip animation is a satisfying first use of CSS transforms.",
+    "need": [
+      "Create decks and add cards with a front and back",
+      "Study mode showing one card at a time",
+      "Click to flip with a CSS transition",
+      "Got it / Missed it, with missed cards requeued",
+      "End-of-session summary and localStorage persistence"
+    ],
+    "plan": [
+      "Build deck and card creation with a plain list view of everything.",
+      "Add study mode showing the first card's front only.",
+      "Add the flip, using CSS transform rotateY and backface-visibility.",
+      "Implement the queue so Missed pushes the card back and Got it drops it.",
+      "Add the summary screen and persistence."
+    ],
+    "levelups": [
+      "Add real spaced repetition, scheduling cards by day rather than by session.",
+      "Import a deck from pasted CSV.",
+      "Track accuracy per card over time."
+    ],
+    "deploy": "React + Vite, plain CSS with a transform-based flip, localStorage.",
+    "proof": "A five-card deck where you miss two takes seven flips to finish, and the summary reports two missed."
+  },
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "Movie Watchlist",
+    "build": "Search films, add them to a watchlist, and tick them off once you have seen them.",
+    "prompt": "Build a movie watchlist as a single-page React app with Vite.\n\nUse the OMDb API. It needs a free key, which arrives by email instantly from\nhttps://www.omdbapi.com/apikey.aspx\n- Search:  https://www.omdbapi.com/?apikey=KEY&s=SEARCH_TERM\n- Details: https://www.omdbapi.com/?apikey=KEY&i=IMDB_ID\n\nRequirements for v1:\n- A search box that queries the API and shows results as poster cards with title and year.\n- An Add button on each result that puts the film on the watchlist.\n- The watchlist shows poster, title, and year, with a Remove button and a\n  Watched toggle. Watched films are visually dimmed and sorted to the bottom.\n- A film already on the list shows as Added in the search results, not Add again.\n- Handle films with no poster by showing a placeholder block, not a broken image.\n- Persist the watchlist to localStorage.\n- Read the key from an environment variable, not a hardcoded string.\n\nConstraints: no backend. Plain CSS.",
+    "why": "Your first build with an API key, and the right habit to form is keeping it out of your source code. It is also the first time two lists have to stay in sync: search results need to know what is already on the watchlist. That cross-referencing is a pattern you will use constantly, and broken poster images teach you to design for missing data.",
+    "need": [
+      "Search box querying OMDb by title",
+      "Results as poster cards with an Add button",
+      "Watchlist with Remove and a Watched toggle",
+      "Already-added films marked in the search results",
+      "Placeholder for missing posters, key read from an env variable"
+    ],
+    "plan": [
+      "Get the free key and fetch one hardcoded search, logging the response shape.",
+      "Render results as a simple text list, then add posters.",
+      "Build the watchlist with add and remove, persisting to localStorage.",
+      "Cross-reference so results show Added for films already saved.",
+      "Add the Watched toggle with dimming and sorting, then the poster placeholder."
+    ],
+    "levelups": [
+      "Add a detail view using the by-id endpoint for plot and cast.",
+      "Filter the watchlist by watched or unwatched.",
+      "Add a personal star rating for watched films."
+    ],
+    "deploy": "React + Vite, plain CSS, localStorage. Key in a .env file via import.meta.env.",
+    "proof": "Searching a film, adding it, refreshing, and searching again shows it as Added rather than offering to add a duplicate.",
+    "api": "https://www.omdbapi.com — free key by email"
+  },
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "Reading List Tracker",
+    "build": "Search real books, shelve them as to-read, reading, or finished, and log your progress.",
+    "prompt": "Build a reading list tracker as a single-page React app with Vite.\n\nUse the Open Library API, which is free and needs no key:\n- Search: https://openlibrary.org/search.json?q=SEARCH_TERM&limit=10\n- Cover:  https://covers.openlibrary.org/b/id/COVER_ID-M.jpg\n\nRequirements for v1:\n- Search books by title or author and show up to ten results with cover, title,\n  author, and first published year.\n- Add a book to one of three shelves: To read, Reading, or Finished.\n- A three-column board showing the shelves side by side, each with its book count.\n- Move a book between shelves with a dropdown or buttons, and remove it entirely.\n- For books on the Reading shelf, track current page against total pages and show a\n  progress bar.\n- Persist to localStorage.\n\nConstraints: no backend, no key, no drag-and-drop library. Plain CSS with flexbox\nor grid for the columns.",
+    "why": "The first build with more than one place a thing can be. Moving a book between shelves means changing one field rather than deleting and recreating, which is the mental model behind status columns in every project tool you will ever use. The API also returns messy real-world data with missing covers and authors, so you learn to code defensively.",
+    "need": [
+      "Search Open Library by title or author",
+      "Add a result to one of three shelves",
+      "Three-column shelf board with counts",
+      "Move between shelves and remove",
+      "Page progress bar for books being read"
+    ],
+    "plan": [
+      "Fetch one hardcoded search and render titles as plain text.",
+      "Add covers and handle results that have no cover_i field.",
+      "Build the three-column layout with hardcoded books in each.",
+      "Wire up adding, moving, and removing, keeping shelf as a field on the book.",
+      "Add page tracking and the progress bar, then persistence."
+    ],
+    "levelups": [
+      "Add a yearly reading goal with progress.",
+      "Add notes and a rating per finished book.",
+      "Show finished books on a timeline by month."
+    ],
+    "deploy": "React + Vite, plain CSS, localStorage. No backend, no key.",
+    "proof": "You can search a book, shelve it as Reading, set it to page 50 of 200, and see a quarter-filled bar that survives a refresh.",
+    "api": "https://openlibrary.org/search.json — no key required"
+  },
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "Workout Logger",
+    "build": "Log exercises, sets, reps, and weight, then watch your lifts go up over time.",
+    "prompt": "Build a workout logger as a single-page React app with Vite.\n\nRequirements for v1:\n- Start a workout for today, then add exercises to it by name.\n- Under each exercise, add sets, each with reps and a weight.\n- Delete a set or a whole exercise.\n- A history view listing past workouts by date, newest first, each expandable to show\n  its exercises and sets.\n- For a chosen exercise, show a personal best: the heaviest weight ever logged and the\n  date it happened.\n- Compute total volume per workout as the sum of reps multiplied by weight across all sets.\n- Persist to localStorage.\n\nConstraints: no backend. Plain CSS. Model the data as workouts containing exercises\ncontaining sets, and think about that shape before writing components.",
+    "why": "This is where nested data gets real. A workout holds exercises which hold sets, so updating the weight on one set means updating three levels without mutating anything above it. That is genuinely fiddly, and doing it once by hand teaches you why immutable updates are worth caring about far better than any explanation.",
+    "need": [
+      "Start a workout for today and add named exercises",
+      "Add sets with reps and weight under each exercise",
+      "Delete individual sets or whole exercises",
+      "History of past workouts, expandable by date",
+      "Personal best per exercise and total volume per workout"
+    ],
+    "plan": [
+      "Write the data shape on paper first: workouts, then exercises, then sets.",
+      "Build a single workout with hardcoded exercises and sets to get the layout right.",
+      "Add set creation, being careful to update nested state immutably.",
+      "Add deletion at both levels, then the volume calculation.",
+      "Add the history view and the personal-best lookup across all workouts."
+    ],
+    "levelups": [
+      "Add a line chart of weight over time per exercise.",
+      "Add rest timers between sets.",
+      "Add workout templates you can start from."
+    ],
+    "deploy": "React + Vite, plain CSS, localStorage. Nested workout to exercise to set data.",
+    "proof": "Logging three sets of bench press today and a heavier one tomorrow makes the personal best update to tomorrow's number."
+  },
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "Recipe Box",
+    "build": "Search thousands of real recipes and keep the ones you actually cook.",
+    "prompt": "Build a recipe box as a single-page React app with Vite.\n\nUse TheMealDB, which is free and needs no key:\n- Search by name:  https://www.themealdb.com/api/json/v1/1/search.php?s=TERM\n- Filter by area:  https://www.themealdb.com/api/json/v1/1/filter.php?a=Indian\n- Lookup by id:    https://www.themealdb.com/api/json/v1/1/lookup.php?i=ID\n- List areas:      https://www.themealdb.com/api/json/v1/1/list.php?a=list\n\nRequirements for v1:\n- Search recipes by name and show results as cards with image and title.\n- A cuisine dropdown, populated from the list endpoint, that filters instead of searching.\n- Clicking a card opens a detail view with the image, ingredients with measures, and\n  the instructions.\n- A Save button that adds the recipe to a saved list, viewable on its own tab.\n- Persist saved recipes to localStorage.\n\nNote: the API returns ingredients as 20 flat fields, strIngredient1 through\nstrIngredient20, with matching strMeasure fields. Write a helper that folds these into\na clean array and skips the empty ones.\n\nConstraints: no backend, no key, no router — use state to switch views. Plain CSS.",
+    "why": "Real APIs return awkward shapes, and this one is a perfect example: twenty numbered ingredient fields instead of an array. Writing the helper that normalises that into something sane is the actual lesson, because you will meet this shape constantly and the fix is always to reshape at the boundary rather than let the mess spread through your components.",
+    "need": [
+      "Recipe search by name with image cards",
+      "Cuisine dropdown populated from the API",
+      "Detail view with ingredients, measures, and instructions",
+      "Save to a persisted saved-recipes list",
+      "Helper folding the 20 flat ingredient fields into an array"
+    ],
+    "plan": [
+      "Fetch one hardcoded search and log the response so you can see the ingredient fields.",
+      "Write and test the ingredient-folding helper before building any UI around it.",
+      "Render search results as cards, then build the detail view.",
+      "Add the cuisine dropdown from the list endpoint.",
+      "Add saving with localStorage and a tab to view saved recipes."
+    ],
+    "levelups": [
+      "Generate a shopping list from several saved recipes.",
+      "Add a random recipe button using the random endpoint.",
+      "Let people add their own recipes alongside API ones."
+    ],
+    "deploy": "React + Vite, plain CSS, localStorage. No backend, no key.",
+    "proof": "Opening a recipe shows only the ingredients it actually has, with no blank rows from the unused numbered fields.",
+    "api": "https://www.themealdb.com/api/json/v1/1 — no key required"
+  },
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "Trivia Quiz",
+    "build": "A timed multiple-choice quiz with categories, difficulty, and a score at the end.",
+    "prompt": "Build a trivia quiz as a single-page React app with Vite.\n\nUse the Open Trivia Database, which is free and needs no key:\n- Questions:  https://opentdb.com/api.php?amount=10&category=ID&difficulty=easy&type=multiple\n- Categories: https://opentdb.com/api_category.php\n\nRequirements for v1:\n- A start screen where you pick a category (from the categories endpoint), a difficulty,\n  and a question count.\n- One question at a time with four shuffled answers as buttons.\n- Clicking an answer locks it in, colours the chosen button green if right and red if\n  wrong, always highlights the correct one, then shows a Next button.\n- A 15-second timer per question. Running out counts as wrong and auto-advances.\n- Progress indicator, e.g. \"Question 3 of 10\".\n- A results screen with the score, the percentage, and a Play again button.\n\nImportant: the API returns HTML entities in questions, e.g. &quot; and &#039;. Decode\nthem before rendering. Also, correct and incorrect answers come separately, so combine\nand shuffle them once per question, not on every render.\n\nConstraints: no backend, no key. Plain CSS.",
+    "why": "The shuffle bug in this build is one every beginner hits: shuffling inside the render body reorders the answers on every state change, so the buttons jump around as you click. Fixing it teaches you the difference between something computed during render and something computed once when the data arrives, which is a real turning point in understanding React.",
+    "need": [
+      "Start screen with category, difficulty, and question count",
+      "One question at a time with four shuffled answers",
+      "Immediate right/wrong feedback with the correct answer shown",
+      "15-second per-question timer that auto-advances",
+      "Results screen with score and Play again"
+    ],
+    "plan": [
+      "Fetch ten questions and render just the first question's text.",
+      "Decode the HTML entities, then combine and shuffle the answers once per question.",
+      "Add answer buttons with locked-in colour feedback and a Next button.",
+      "Add the progress indicator and the per-question timer.",
+      "Add the start screen with real categories and the results screen."
+    ],
+    "levelups": [
+      "Keep a high-score table per category in localStorage.",
+      "Add a streak bonus to the scoring.",
+      "Add a review screen showing every question you got wrong."
+    ],
+    "deploy": "React + Vite, plain CSS. No backend, no key.",
+    "proof": "Answers stay in the same order while you look at a question, and apostrophes render as apostrophes rather than &#039;.",
+    "api": "https://opentdb.com/api.php — no key required"
+  },
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "Dictionary Lookup",
+    "build": "Look up any English word and get definitions, pronunciation, and audio.",
+    "prompt": "Build a dictionary app as a single-page React app with Vite.\n\nUse the Free Dictionary API, which needs no key:\n- https://api.dictionaryapi.dev/api/v2/entries/en/WORD\n\nRequirements for v1:\n- A search box for a single word.\n- Results grouped by part of speech (noun, verb, adjective), each with its definitions\n  numbered, and an example sentence where the API provides one.\n- Show the phonetic spelling, and if an audio URL exists, a play button that plays it.\n- Show synonyms as clickable chips that search that word.\n- A clear \"No definitions found\" state. This API never returns an empty list — it fails\n  with a non-200 status instead, usually 404 for an unknown word. It is a free community\n  service and also returns 5xx errors when it is having a bad day, so check response.ok\n  and treat any non-OK status as \"no definition available\" rather than assuming 404.\n- Keep a search history of the last ten words as clickable chips, persisted to localStorage.\n\nConstraints: no backend, no key. Use the Audio constructor for playback. Plain CSS.",
+    "why": "This one teaches you to check response.ok, because fetch does not throw on a 404 the way beginners expect — it resolves normally and your code happily tries to read definitions that are not there. The API is also genuinely flaky, which is a useful thing to design around early: an app that says 'no definition available' when the service is down beats one that shows a blank screen.",
+    "need": [
+      "Single-word search box",
+      "Definitions grouped by part of speech with examples",
+      "Phonetic spelling and audio playback when available",
+      "Clickable synonym chips that trigger a new search",
+      "Not-found state driven by response.ok, and a persisted search history"
+    ],
+    "plan": [
+      "Fetch one hardcoded word and log the response, noting how nested it is.",
+      "Render the first definition only, then group all of them by part of speech.",
+      "Add phonetics and the audio button, handling entries with no audio.",
+      "Check response.ok and render the not-found state for any non-OK status.",
+      "Add synonym chips and the persisted history."
+    ],
+    "levelups": [
+      "Add a word-of-the-day on load from a small local list.",
+      "Save favourite words to a personal list.",
+      "Support multi-word phrases gracefully."
+    ],
+    "deploy": "React + Vite, plain CSS, localStorage. No backend, no key.",
+    "proof": "Searching a real word shows grouped definitions; searching 'asdfgh' shows a calm not-found message rather than a crash, and so does using the app while the API is down.",
+    "api": "https://api.dictionaryapi.dev — no key required"
+  },
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "Crypto Price Tracker",
+    "build": "Live prices for the coins you care about, with 24-hour movement and a sparkline.",
+    "prompt": "Build a crypto price tracker as a single-page React app with Vite.\n\nUse the CoinGecko public API, which needs no key for these endpoints:\n- Markets: https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum&sparkline=true\n- Search:  https://api.coingecko.com/api/v3/search?query=TERM\n\nRequirements for v1:\n- A default watchlist of a few coins, fetched on load.\n- Each row shows the coin icon, name, symbol, current price, and 24-hour percentage\n  change, coloured green when up and red when down.\n- Add a coin via a search box, and remove a coin from the row.\n- Draw a small sparkline of the 7-day price using an inline SVG polyline. Compute the\n  points by scaling the price array to the SVG's width and height yourself.\n- Refresh prices every 60 seconds, and show when the data was last updated.\n- Persist the watchlist to localStorage.\n\nNote: CoinGecko rate-limits free use, so do not poll faster than every 60 seconds and\nhandle a 429 response by backing off rather than retrying immediately.\n\nConstraints: no backend, no key, no chart library — the sparkline is hand-drawn SVG.\nPlain CSS.",
+    "why": "Drawing the sparkline by hand is the point. Scaling an array of prices into SVG coordinates means finding the min and max, normalising each value, and flipping the y axis because SVG counts downward. It demystifies charting libraries completely. Polling on an interval also forces you to think about rate limits, which is a real constraint you will keep meeting.",
+    "need": [
+      "Watchlist of coins fetched on load",
+      "Price and 24-hour change, coloured by direction",
+      "Add via search and remove from the row",
+      "Hand-drawn SVG sparkline of the 7-day price",
+      "60-second refresh with a last-updated time"
+    ],
+    "plan": [
+      "Fetch two hardcoded coins and render name and price as text.",
+      "Add the 24-hour change with conditional colouring.",
+      "Write the function that turns a price array into SVG polyline points and render it.",
+      "Add search-based adding and row removal with persistence.",
+      "Add the 60-second interval, cleaning it up in useEffect, and the last-updated label."
+    ],
+    "levelups": [
+      "Add a currency switcher beyond USD.",
+      "Let people set a price alert that highlights the row.",
+      "Add a detail view with a larger chart."
+    ],
+    "deploy": "React + Vite, plain CSS, inline SVG, localStorage. No backend, no key.",
+    "proof": "The sparkline's shape matches the direction of the 24-hour change, and prices refresh on their own without the page reloading.",
+    "api": "https://api.coingecko.com/api/v3 — no key, rate-limited"
+  },
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "GitHub Profile Card",
+    "build": "Type a username and get a clean card of their profile, top repos, and languages.",
+    "prompt": "Build a GitHub profile viewer as a single-page React app with Vite.\n\nUse the public GitHub API, which needs no key for these endpoints:\n- User:  https://api.github.com/users/USERNAME\n- Repos: https://api.github.com/users/USERNAME/repos?sort=updated&per_page=100\n\nRequirements for v1:\n- A username search box.\n- A profile card with avatar, name, bio, and the follower, following, and public repo counts.\n- A list of their six most-starred repositories, each with name, description, star count,\n  and primary language.\n- A language breakdown: count how many repos use each language and show the top five as\n  percentage bars.\n- Handle a username that does not exist with a clear message, since the API returns 404.\n- Handle the rate limit: unauthenticated requests are capped at 60 per hour, and the API\n  returns 403 when you hit it. Say so plainly rather than showing a generic error.\n\nConstraints: no backend, no token. Plain CSS.",
+    "why": "Two fetches, two different failure modes, and both matter. A 404 means no such user; a 403 means you have run out of requests for the hour and nothing is wrong with the app. Telling those apart is the difference between an app that explains itself and one that just says 'error'. Sorting and aggregating the repo list is good practice too.",
+    "need": [
+      "Username search box",
+      "Profile card with avatar, bio, and counts",
+      "Six most-starred repos with stars and language",
+      "Language breakdown as percentage bars",
+      "Distinct handling for 404 and for the 403 rate limit"
+    ],
+    "plan": [
+      "Fetch one hardcoded user and render the avatar and name.",
+      "Add the bio and the three counts to finish the card.",
+      "Fetch repos, sort by stargazers_count, and render the top six.",
+      "Count languages with reduce and render the top five as bars.",
+      "Add the search box, then handle 404 and 403 with separate messages."
+    ],
+    "levelups": [
+      "Add a contribution-style activity list from the events endpoint.",
+      "Compare two users side by side.",
+      "Add a personal access token to lift the rate limit."
+    ],
+    "deploy": "React + Vite, plain CSS. No backend, no token.",
+    "proof": "A real username renders a full card, a nonsense one says the user was not found, and both messages are distinguishable.",
+    "api": "https://api.github.com — no key, 60 requests/hour"
+  },
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "Markdown Notes",
+    "build": "Write notes in markdown with a live preview and full-text search.",
+    "prompt": "Build a markdown notes app as a single-page React app with Vite.\n\nRequirements for v1:\n- A sidebar listing notes by title, newest first, with a New note button.\n- A two-pane editor: a textarea on the left, rendered markdown on the right, updating\n  as you type.\n- Derive each note's title from its first heading or first line, so there is no separate\n  title field.\n- A search box that filters notes by matching their content, not just the title.\n- Delete a note, with a confirmation step.\n- Persist notes to localStorage, saving as you type but debounced so you are not writing\n  on every keystroke.\n\nFor markdown, either use the marked package, or write a small renderer handling\nheadings, bold, italic, links, inline code, and unordered lists. If you render HTML\nfrom markdown, sanitise it or escape HTML in the source first — never inject raw user\nHTML into the page.\n\nConstraints: no backend. Plain CSS.",
+    "why": "Debouncing is the lesson here. Writing to localStorage on every keystroke is wasteful and janky, and the fix — waiting until typing pauses — is a technique you will reuse for search boxes, autosave, and API calls forever. The markdown rendering also raises a real security question about injecting HTML, which is worth meeting early in a safe setting.",
+    "need": [
+      "Sidebar of notes with a New note button",
+      "Two-pane editor with live markdown preview",
+      "Title derived from the first line or heading",
+      "Full-text search across note content",
+      "Delete with confirmation, debounced localStorage saving"
+    ],
+    "plan": [
+      "Build the two panes with one hardcoded note and no persistence.",
+      "Wire the textarea to state so the preview updates as you type.",
+      "Add markdown rendering, escaping HTML in the source before converting.",
+      "Add the sidebar, note creation, switching between notes, and deletion.",
+      "Add full-text search and debounced saving."
+    ],
+    "levelups": [
+      "Add tags and filter by them.",
+      "Add export to a .md file.",
+      "Add keyboard shortcuts for new note and search."
+    ],
+    "deploy": "React + Vite, plain CSS, localStorage with debounced writes.",
+    "proof": "Typing quickly does not stutter, and pasting a script tag into a note renders it as visible text rather than executing it."
+  },
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "Kanban Board",
+    "build": "Drag cards between To do, Doing, and Done, with everything remembered.",
+    "prompt": "Build a kanban board as a single-page React app with Vite.\n\nRequirements for v1:\n- Three fixed columns: To do, Doing, Done, each showing its card count.\n- Add a card to any column with a title and an optional short description.\n- Drag a card to another column using the native HTML5 drag-and-drop events\n  (draggable, onDragStart, onDragOver, onDrop). Do not install a drag library.\n- The column being dragged over is visibly highlighted.\n- Edit a card's title inline by clicking it, and delete a card.\n- Persist to localStorage.\n\nNote on HTML5 drag and drop: onDragOver must call event.preventDefault() or the drop\nevent will never fire. This catches everyone the first time.\n\nConstraints: no backend, no drag-and-drop library. Plain CSS with flexbox or grid.",
+    "why": "Native drag and drop has a famously unhelpful gotcha — the drop event silently never fires unless you preventDefault in dragover — and hitting it teaches you to read browser API docs properly rather than guessing. Beyond that, moving a card between columns is the same state-shape lesson as the reading list, but with a much more satisfying interaction on top.",
+    "need": [
+      "Three columns with live card counts",
+      "Add a card with title and optional description",
+      "Native HTML5 drag between columns",
+      "Drop-target highlighting while dragging",
+      "Inline title editing, delete, and persistence"
+    ],
+    "plan": [
+      "Render three columns with hardcoded cards and no interaction.",
+      "Add card creation per column.",
+      "Add draggable and the drag handlers, remembering preventDefault in onDragOver.",
+      "Add the drop-target highlight using drag-enter and drag-leave state.",
+      "Add inline editing, deletion, and localStorage."
+    ],
+    "levelups": [
+      "Let people reorder cards within a column, not just across.",
+      "Add custom columns rather than three fixed ones.",
+      "Add due dates with an overdue highlight."
+    ],
+    "deploy": "React + Vite, plain CSS, native HTML5 drag and drop, localStorage.",
+    "proof": "A card dragged from To do to Done stays there after a refresh, and the counts on both columns update."
+  },
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "Event Countdown",
+    "build": "Count down to the days that matter, live to the second.",
+    "prompt": "Build an event countdown app as a single-page React app with Vite.\n\nRequirements for v1:\n- Add an event with a name and a target date and time.\n- Each event shows a live countdown in days, hours, minutes, and seconds, ticking\n  every second.\n- Events are sorted by which is soonest.\n- Events in the past show \"Passed\" with how long ago, rather than negative numbers.\n- Delete an event.\n- Give each event a colour, chosen from a small fixed palette, used as a left border.\n- Persist to localStorage.\n\nUse a single interval for the whole page that updates a \"now\" value once per second,\nrather than one interval per event. Derive every countdown from that single value.\n\nConstraints: no backend, no date library — use the built-in Date. Plain CSS.",
+    "why": "One interval driving the whole page instead of one per card is a small architectural decision with a big payoff, and this is a great place to feel the difference. Ten events with ten intervals drift apart and tick raggedly; one shared clock keeps them in lockstep. Handling past dates also forces you to think about a state you would otherwise forget until someone hits it.",
+    "need": [
+      "Add an event with a name, date, and time",
+      "Live days/hours/minutes/seconds countdown",
+      "Sorted with the soonest first",
+      "Past events shown as Passed with elapsed time",
+      "Colour coding, delete, and persistence"
+    ],
+    "plan": [
+      "Render one hardcoded event with a static countdown computed once.",
+      "Add a single interval updating a now value each second and derive the countdown from it.",
+      "Write the formatter that turns a millisecond difference into days, hours, minutes, seconds.",
+      "Add event creation, sorting, and deletion.",
+      "Handle past events and add the colour palette and persistence."
+    ],
+    "levelups": [
+      "Add recurring annual events like birthdays.",
+      "Add a full-screen focus mode for one event.",
+      "Show the countdown in the tab title for a pinned event."
+    ],
+    "deploy": "React + Vite, plain CSS, one shared setInterval, localStorage.",
+    "proof": "Three events tick over to the next second at exactly the same moment, and a date in the past reads Passed rather than showing negatives."
+  },
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "Unit and Currency Converter",
+    "build": "Convert length, weight, temperature, and live currency in one place.",
+    "prompt": "Build a converter app as a single-page React app with Vite.\n\nRequirements for v1:\n- Tabs for four categories: Length, Weight, Temperature, and Currency.\n- Two side-by-side fields with unit dropdowns and a swap button between them.\n- Typing in either field converts into the other live, in both directions.\n- Length, weight, and temperature convert offline from constants you define. Do\n  temperature carefully: it needs offsets, not just multiplication, so Celsius to\n  Fahrenheit is not a simple ratio.\n- Currency uses live rates from https://open.er-api.com/v6/latest/USD which needs no key.\n  Fetch once on load, convert via USD as the base, and show the rate date.\n- Remember the last used category and unit pair in localStorage.\n\nFor length and weight, convert through a base unit — metres and grams — rather than\nwriting a rule for every possible pair.\n\nConstraints: no backend, no key. Plain CSS.",
+    "why": "Converting through a base unit is the whole idea. The naive approach needs a rule for every pair of units and collapses under its own weight; going via metres turns dozens of rules into one small table. Temperature then breaks that model because of its offsets, which is a nice reminder that a clean abstraction still needs escape hatches.",
+    "need": [
+      "Four category tabs",
+      "Two-way live conversion between paired fields",
+      "Swap button for the unit pair",
+      "Offline length, weight, and temperature conversion",
+      "Live currency rates with the rate date shown"
+    ],
+    "plan": [
+      "Build length only, converting through metres with a small factor table.",
+      "Add two-way binding so typing in either field updates the other.",
+      "Add weight using the same base-unit approach, then temperature as a special case.",
+      "Add the currency tab, fetching rates once on load.",
+      "Add the swap button and remember the last category and units."
+    ],
+    "levelups": [
+      "Add more categories such as area, speed, or data size.",
+      "Cache currency rates for a day so you fetch less.",
+      "Add a compact conversion history."
+    ],
+    "deploy": "React + Vite, plain CSS, localStorage. Currency from open.er-api.com, no key.",
+    "proof": "100 Celsius converts to 212 Fahrenheit, and typing into either side of any pair updates the other without an infinite loop.",
+    "api": "https://open.er-api.com/v6/latest/USD — no key required"
+  },
+  {
+    "kind": "starter",
+    "track": "Starter",
+    "difficulty": "Easy",
+    "name": "Daily Mood Journal",
+    "build": "Log how the day went, add a note, and see your mood over the month at a glance.",
+    "prompt": "Build a mood journal as a single-page React app with Vite.\n\nRequirements for v1:\n- Log today's mood on a five-point scale, shown as five emoji buttons, plus an optional\n  short note and optional tags such as work, sleep, or social.\n- One entry per day. Logging again for today updates that day instead of adding a second.\n- A month calendar grid where each day is tinted by that day's mood, with empty days\n  left blank. Clicking a day shows its note.\n- Arrows to move between months.\n- Simple stats for the visible month: average mood, number of days logged, and the\n  most common tag.\n- Persist to localStorage, keyed by ISO date.\n\nBuilding the calendar grid means working out which weekday the first of the month falls\non and padding the grid with blanks before day 1. Work that out before writing the JSX.\n\nConstraints: no backend, no date or calendar library. Plain CSS grid.",
+    "why": "Building a month grid by hand is a genuinely good exercise: you have to find the first weekday, pad the leading blanks, and know how many days the month has, including February in a leap year. It is the kind of thing you assume needs a library until you do it once. The one-entry-per-day rule is also a clean introduction to upserting rather than appending.",
+    "need": [
+      "Five-point mood logging with an optional note and tags",
+      "One entry per day, updating rather than duplicating",
+      "Month calendar grid tinted by mood",
+      "Month navigation and per-day note view",
+      "Monthly stats: average mood, days logged, top tag"
+    ],
+    "plan": [
+      "Build the logging form and store today's entry keyed by ISO date.",
+      "Render a plain list of entries to confirm the upsert works.",
+      "Work out the calendar maths, then render an empty month grid with correct padding.",
+      "Tint each day by mood and show the note on click.",
+      "Add month navigation and the monthly stats."
+    ],
+    "levelups": [
+      "Add a mood-over-time line chart.",
+      "Correlate mood against tags to spot patterns.",
+      "Add an export of all entries as JSON."
+    ],
+    "deploy": "React + Vite, plain CSS grid, localStorage keyed by ISO date.",
+    "proof": "Logging twice in one day leaves a single entry, and the first of the month lands under the correct weekday."
+  }
+]
