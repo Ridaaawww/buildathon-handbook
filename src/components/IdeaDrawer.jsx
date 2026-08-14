@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useRef, useState } from 'react';
 import { DIFF_LEVEL, buildBrief, labelsFor, parsePowerup } from '../lib/ideas';
 import { Meter } from './Meter';

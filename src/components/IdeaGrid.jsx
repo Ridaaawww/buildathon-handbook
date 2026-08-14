@@ -1,3 +1,5 @@
+'use client';
+
 import { IdeaCard } from './IdeaCard';
 
 export function IdeaGrid({ ideas, onOpen }) {

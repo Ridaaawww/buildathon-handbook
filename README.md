@@ -2,7 +2,7 @@
 
 An interactive board of 113 project ideas you can search, filter, and open in
 full: 93 buildathon briefs plus 20 beginner starters that ship with a
-copy-and-paste build prompt. Built with React and Vite.
+copy-and-paste build prompt. Built with Next.js.
 
 ## Running it
 
@@ -11,13 +11,15 @@ npm install
 npm run dev
 ```
 
-Then visit <http://localhost:8743>.
+Then visit <http://localhost:8743>. Use `localhost`, not `127.0.0.1` — the Next
+dev server treats the two as different origins and returns 403 for its own
+chunks on the one it was not started with, which silently breaks hydration.
 
 | Script | What it does |
 | --- | --- |
 | `npm run dev` | Dev server with hot reload |
-| `npm run build` | Production build into `dist/` |
-| `npm run preview` | Serve the built `dist/` locally |
+| `npm run build` | Static export into `out/` |
+| `npm run start` | Serve a production build |
 
 ## What's in it
 
@@ -42,20 +44,31 @@ Then visit <http://localhost:8743>.
 ## Project layout
 
 ```
-index.html              Vite entry, plus the pre-paint theme script
-vite.config.js          Dev server port, relative base, chunk splitting
+next.config.mjs         Static export config
 src/
-  main.jsx              React root
-  App.jsx               Filter state, drawer state, hash sync
+  app/layout.jsx        Root layout, metadata, pre-paint theme script
+  app/page.jsx          Renders the board
+  app/icon.svg          Favicon
+  components/
+    IdeaBank.jsx        Top-level client component: filters, drawer, hash sync
+    TitleBlock · Toolbar · IdeaGrid · IdeaCard · IdeaDrawer
+    StairPanel · SubmitSection · ThemeToggle · Meter
   data/ideas.json       The 93 buildathon briefs
   data/starters.json    The 20 beginner starters
-  lib/ideas.js          Derived data, sorting, brief text builder
+  lib/ideas.js          Derived data, sorting, labels, brief text builder
   hooks/                useTheme, useSubmissions, useReducedMotion
-  components/           TitleBlock, Toolbar, IdeaGrid, IdeaCard,
-                        IdeaDrawer, StairPanel, SubmitSection,
-                        ThemeToggle, Meter
   styles/index.css      Design tokens and all component styles
 ```
+
+### A note on client components
+
+The board is entirely interactive, so `IdeaBank` and its children are client
+components. Pages are still prerendered, which means `window`, `document`, and
+`localStorage` do not exist during that pass. Every hook that touches them
+(`useTheme`, `useSubmissions`, `useReducedMotion`) reads after mount inside
+`useEffect` rather than in a `useState` initialiser, and each guards its first
+write so it cannot overwrite stored data before it has been read. The deep-link
+hash is resolved the same way.
 
 ## Editing the ideas
 
@@ -112,6 +125,10 @@ carries a hidden honeypot field that silently drops bot submissions.
 
 ## Deploying
 
-`npm run build` emits a static `dist/`. Because `base` is `'./'`, the output
-works from any path, including a GitHub Pages project subdirectory. Deploy
-`dist/` to any static host — Pages, Netlify, Vercel, Cloudflare Pages.
+`next.config.mjs` sets `output: 'export'`, so `npm run build` emits a fully
+static site into `out/` with no Node server required. Deploy that folder to any
+static host — GitHub Pages, Netlify, Vercel, Cloudflare Pages.
+
+For GitHub Pages served from a project subdirectory, also set `basePath` and
+`assetPrefix` in `next.config.mjs` to `/buildathon-handbook`, or the asset URLs
+will resolve against the domain root.

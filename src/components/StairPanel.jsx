@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useRef, useState } from 'react';
 import { BRIEF_PARTS, IDEAS } from '../lib/ideas';
 import { useReducedMotion } from '../hooks/useReducedMotion';

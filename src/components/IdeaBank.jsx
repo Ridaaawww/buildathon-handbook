@@ -1,13 +1,15 @@
+'use client';
+
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { SORTED_IDEAS, IDEAS } from './lib/ideas';
-import { useTheme } from './hooks/useTheme';
-import { ThemeToggle } from './components/ThemeToggle';
-import { TitleBlock } from './components/TitleBlock';
-import { Toolbar } from './components/Toolbar';
-import { IdeaGrid } from './components/IdeaGrid';
-import { IdeaDrawer } from './components/IdeaDrawer';
-import { StairPanel } from './components/StairPanel';
-import { SubmitSection } from './components/SubmitSection';
+import { SORTED_IDEAS, IDEAS } from '../lib/ideas';
+import { useTheme } from '../hooks/useTheme';
+import { ThemeToggle } from './ThemeToggle';
+import { TitleBlock } from './TitleBlock';
+import { Toolbar } from './Toolbar';
+import { IdeaGrid } from './IdeaGrid';
+import { IdeaDrawer } from './IdeaDrawer';
+import { StairPanel } from './StairPanel';
+import { SubmitSection } from './SubmitSection';
 
 function ideaIdFromHash() {
   const match = window.location.hash.match(/^#idea-(\d+)$/);
@@ -16,12 +18,14 @@ function ideaIdFromHash() {
   return Number.isInteger(id) && id >= 0 && id < IDEAS.length ? id : null;
 }
 
-export default function App() {
+export default function IdeaBank() {
   const { theme, cycle } = useTheme();
   const [query, setQuery] = useState('');
   const [track, setTrack] = useState('all');
   const [difficulty, setDifficulty] = useState('all');
-  const [openId, setOpenId] = useState(ideaIdFromHash);
+  // Starts closed: the hash cannot be read during a server prerender, so the
+  // deep link is resolved after mount instead.
+  const [openId, setOpenId] = useState(null);
 
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -41,21 +45,28 @@ export default function App() {
     setOpenId(pool[Math.floor(Math.random() * pool.length)].id);
   }, [visible]);
 
-  // Keep the URL hash in step with the open drawer, and follow back/forward.
+  // Resolve any incoming deep link once, after mount, and follow back/forward.
+  const [hashRead, setHashRead] = useState(false);
   useEffect(() => {
-    const target = openId === null ? `${window.location.pathname}${window.location.search}` : `#idea-${openId}`;
-    if (openId === null) {
-      if (window.location.hash) window.history.replaceState(null, '', target);
-    } else if (window.location.hash !== target) {
-      window.history.replaceState(null, '', target);
-    }
-  }, [openId]);
-
-  useEffect(() => {
+    setOpenId(ideaIdFromHash());
+    setHashRead(true);
     const onHashChange = () => setOpenId(ideaIdFromHash());
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
+
+  // Keep the URL hash in step with the open drawer. Held back until the
+  // incoming hash has been read, or this would strip it on first mount.
+  useEffect(() => {
+    if (!hashRead) return;
+    if (openId === null) {
+      if (window.location.hash) {
+        window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+      }
+    } else if (window.location.hash !== `#idea-${openId}`) {
+      window.history.replaceState(null, '', `#idea-${openId}`);
+    }
+  }, [openId, hashRead]);
 
   const openIdea_ = openId === null ? null : IDEAS[openId];
 

@@ -1,3 +1,5 @@
+'use client';
+
 import { DIFFICULTIES, DIFF_COUNTS, IDEAS, TRACKS, TRACK_COUNTS } from '../lib/ideas';
 
 export function Toolbar({ query, track, difficulty, onQuery, onTrack, onDifficulty, shown, onRandom }) {

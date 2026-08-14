@@ -1,3 +1,5 @@
+'use client';
+
 import { useRef, useState } from 'react';
 import { DIFFICULTIES, TRACKS } from '../lib/ideas';
 import { useSubmissions } from '../hooks/useSubmissions';

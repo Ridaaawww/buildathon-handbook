@@ -1,3 +1,5 @@
+'use client';
+
 import { DIFF_LEVEL, partnerMeta } from '../lib/ideas';
 import { Meter } from './Meter';
 
